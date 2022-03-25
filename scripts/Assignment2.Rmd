@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Project Description
 
-This project explores how sex, religious affiliation, and income influence responses to questions about whether the children of mothers who work for pay suffer and whether when jobs are scarce, employers should give priority to citizens of a country over immigrants. The data used in this analysis come from the 2017 European Value Study (EVS). The EVS is described as "a large-scale, cross-national and longitudinal survey research program on how Europeans think about family, work, religion, politics, and society. Repeated every nine years in an increasing number of countries, the survey provides insights into the ideas, beliefs, preferences, attitudes, values, and opinions of citizens all over Europe."
+This project explores how sex, religious affiliation, and income influence how respondents answer questions meant to assess their perspectives on two issues: whether the children of mothers who work for pay suffer and whether when jobs are scarce, employers should give priority to citizens of a country over immigrants. The data used in this analysis was generated as part of the 2017 European Value Study (EVS). The EVS is described as "a large-scale, cross-national and longitudinal survey research program on how Europeans think about family, work, religion, politics, and society. Repeated every nine years in an increasing number of countries, the survey provides insights into the ideas, beliefs, preferences, attitudes, values, and opinions of citizens all over Europe."
 
 
 
@@ -42,7 +42,6 @@ data_clean <- data %>%
 
 ```{r , echo=FALSE, include=TRUE}
 
-
 data_continuous <- data_clean %>%
   select(income, age)
 
@@ -55,10 +54,25 @@ table_categorical <- summary(data_categorical)
 
 library(knitr)
 
-table_categorical <- summarise(data_categorical)
+table_categorical <- summary(data_categorical)
 
 knitr::kable(table_continuous)
+
 knitr::kable(table_categorical)
+
+
+## Create age deciles
+
+data_clean$age_deciles <- data_clean %>%
+  mutate(quantile = ntile(age,10))
+
+
+
+ggplot(data = data_clean, aes(x=suffering_mother, y=age))+
+  theme_minimal()+
+  geom_bar(stat = age) +
+  xlab("age") +
+  ylab("view of whether children of mothers who work suffer")
 
 
 ```
