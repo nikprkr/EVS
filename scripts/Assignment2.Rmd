@@ -1,0 +1,66 @@
+---
+title: "Report"
+author: "Nick Parker"
+date: "3/13/2022"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Project Description
+
+This project explores how sex, religious affiliation, and income influence responses to questions about whether the children of mothers who work for pay suffer and whether when jobs are scarce, employers should give priority to citizens of a country over immigrants. The data used in this analysis come from the 2017 European Value Study (EVS). The EVS is described as "a large-scale, cross-national and longitudinal survey research program on how Europeans think about family, work, religion, politics, and society. Repeated every nine years in an increasing number of countries, the survey provides insights into the ideas, beliefs, preferences, attitudes, values, and opinions of citizens all over Europe."
+
+
+
+## Descriptive Statistics
+
+```{r cars, echo=FALSE, message=FALSE}
+
+library(tidyverse)
+library(haven)
+library(psych)
+
+
+data <- read_dta("/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/ZA7500_v4-0-0.dta")
+
+data_clean <- data %>%
+  select(v72,v80,v52,v261,v243_r,c_abrv,v225, age) %>%
+  rename("suffering_mother"=v72) %>%
+  rename("jobs_scarce"= v80) %>%
+  rename("religion"= v52) %>%
+  rename("sex"= v225) %>%
+  rename("education"= v243_r) %>%
+  rename("country"= c_abrv) %>%
+  rename("income" = v261)
+
+```
+
+```{r , echo=FALSE, include=TRUE}
+
+
+data_continuous <- data_clean %>%
+  select(income, age)
+
+data_categorical <- data_clean %>%
+  select(-income, -age)
+
+table_continuous <- describe(data_continuous)
+
+table_categorical <- summary(data_categorical)
+
+library(knitr)
+
+table_categorical <- summarise(data_categorical)
+
+knitr::kable(table_continuous)
+knitr::kable(table_categorical)
+
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
