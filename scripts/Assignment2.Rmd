@@ -63,17 +63,36 @@ knitr::kable(table_categorical)
 
 ## Create age deciles
 
-data_clean$age_deciles <- data_clean %>%
-  mutate(quantile = ntile(age,10))
+data_clean_age<- data_clean %>%
+  select(age,suffering_mother,jobs_scarce)
 
+data_clean_age_summary<- data_clean_age %>%
+  group_by(age) %>%
+  summarise(mean_suffering_mother = mean(suffering_mother)) %>%
+  filter(age>0)
 
+data_clean_religion_summary<- data_clean %>%
+  group_by(religion) %>%
+  summarise(mean_religion = mean(jobs_scarce)) %>%
+  filter(religion>0) 
 
-ggplot(data = data_clean, aes(x=suffering_mother, y=age))+
+data_clean_religion_summary$religion <- c("Roman Catholic","Protestant", "Free Church/Nonconfirmist/Evangelical", "Jew", "Muslim", "Hindu", "Buddhist", "Orthodox", "Other")
+
+data_clean_religion_summary$religion<- recode(data_clean_religion_summary$religion,'1'='Roman Catholic')
+
+  
+ggplot(data = data_clean_age_summary, aes(age,mean_suffering_mother))+
   theme_minimal()+
-  geom_bar(stat = age) +
+  geom_point() +
   xlab("age") +
-  ylab("view of whether children of mothers who work suffer")
+  ylab("mean response value")
 
+ggplot(data = data_clean_religion_summary, aes(mean_religion, religion))+
+  theme_minimal()+
+  geom_point() +
+  xlab("mean response value") +
+  ylab("religion")+
+  theme(axis.text.x = element_text(angle=90,vjust=0.5))
 
 ```
 
