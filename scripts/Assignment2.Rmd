@@ -16,7 +16,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Project Description
 
-This project explores how sex, religious affiliation, and income influence how respondents answer questions meant to assess their perspectives on two issues: whether the children of mothers who work for pay suffer and whether when jobs are scarce, employers should give priority to citizens of a country over immigrants. The data used in this analysis was generated as part of the 2017 European Value Study (EVS). The EVS is described as "a large-scale, cross-national and longitudinal survey research program on how Europeans think about family, work, religion, politics, and society. Repeated every nine years in an increasing number of countries, the survey provides insights into the ideas, beliefs, preferences, attitudes, values, and opinions of citizens all over Europe."
+This project explores how sex, religious affiliation, and income influence the degree to which respondents agree with the following statements:
+
+- When a mother works for pay, the children suffer
+- When jobs are scarce, employers should give priority to [NATIONALITY] people over immigrants
+
+The data used in this analysis was generated as part of the 2017 European Value Study (EVS). The EVS is described as "a large-scale, cross-national and longitudinal survey research program on how Europeans think about family, work, religion, politics, and society. Repeated every nine years in an increasing number of countries, the survey provides insights into the ideas, beliefs, preferences, attitudes, values, and opinions of citizens all over Europe."
 
 &nbsp;  
 &nbsp;  
@@ -98,28 +103,42 @@ data_clean_religion_jobs<- data_clean %>%
 
 data_clean_religion_jobs$religion <- c("Roman Catholic","Protestant", "Free Church/Nonconfirmist/Evangelical", "Jew", "Muslim", "Hindu", "Buddhist", "Orthodox", "Other")
 
-data_clean_religion_jobs$religion<- recode(data_clean_religion_jobs$religion,'1'='Roman Catholic')
+data_merge_age <- left_join(data_clean_age_suffering, data_clean_age_jobs, by="age")
 
+data_long_age<- data_merge_age %>% 
+  pivot_longer(
+    cols = "mean_age_suffering":"mean_age_jobs",
+    names_to = "new", 
+    values_to = "values"
+  )
+  
+data_merge_religion <- left_join(data_clean_religion_suffering, data_clean_religion_jobs, by="religion")
 
+data_long_religion<- data_merge_religion %>% 
+  pivot_longer(
+    cols = "mean_religion_suffering":"mean_religion_jobs",
+    names_to = "new", 
+    values_to = "values"
+  )
 ```
 &nbsp;  
 &nbsp;  
 
 ## Charts
 
-#### As the age of a respondent increases, it appears more likely that a respondent will agree with the idea that mother's choosing to work outside of the home will harm their children. Also, respondents from the Otohodox, Muslim, and Roman Catholic faiths seem to agree with this statement more often than those from other faiths.
+#### As the age of a respondent increases, it appears more likely that a respondent will agree with the idea that mothers choosing to work outside of the home will harm their children. Also, respondents from the Othodox, Muslim, and Roman Catholic faiths seem to agree with this statement more often than those from other faiths.
 
 &nbsp;  
 &nbsp;  
 
 ```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
 
-ggplot(data = data_clean_age_suffering, aes(age,mean_age_suffering))+
+ggplot(data = data_long_age, aes(age,values, color=new))+
   theme_minimal()+
   geom_point() +
   xlab("age") +
   ylab("mean response value")+
-  ggtitle("Age and mean response to 'children suffering' question")
+  ggtitle("Age and mean response to question")
 
 
 
@@ -130,13 +149,13 @@ ggplot(data = data_clean_age_suffering, aes(age,mean_age_suffering))+
 
 ```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
 
-ggplot(data = data_clean_religion_suffering, aes(mean_religion_suffering, religion))+
+ggplot(data = data_long_religion, aes(religion, values, color=new))+
   theme_minimal()+
   geom_point() +
   xlab("mean response value") +
   ylab("religion")+
   theme(axis.text.x = element_text(angle=90,vjust=0.5))+
-  ggtitle("Religion and mean response to 'children suffering' question")
+  ggtitle("Religion and mean response to question")
 
   
 ```
@@ -144,34 +163,10 @@ ggplot(data = data_clean_religion_suffering, aes(mean_religion_suffering, religi
 &nbsp;  
 &nbsp;  
 
-```{r, echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
-ggplot(data = data_clean_age_jobs, aes(age,mean_age_jobs))+
-  theme_minimal()+
-  geom_point() +
-  xlab("age") +
-  ylab("mean response value")+
-  ggtitle("Age and mean response to 'scarce jobs' question")
-
-```
-&nbsp;  
-&nbsp;  
-
-```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
-
-ggplot(data = data_clean_religion_jobs, aes(mean_religion_jobs, religion))+
-  theme_minimal()+
-  geom_point() +
-  xlab("mean response value") +
-  ylab("religion")+
-  theme(axis.text.x = element_text(angle=90,vjust=0.5))+
-  ggtitle("Religion and mean response to 'jobs scarce' question")
-
-```
-
 ## Statistical Tests
 &nbsp;  
 
-#### As the level of educational attainment of a respondent increases, so too does their level of disagreement with the statement that a mother's choice to work outside the homes harms her children. As the age of a respondent increases, they are more likely to agree with this statement. Women are also more likely to disagree with this statement.
+#### As the level of educational attainment of a respondent increases, so too does their level of disagreement with the statement that a mother's choice to work outside the homes harms her children. Women are also more likely to disagree with this statement. As the age of a respondent increases, they are more likely to agree with this statement. 
 
 ```{r, echo=FALSE, include=TRUE, message=FALSE, results='asis'}
 
