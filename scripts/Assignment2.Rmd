@@ -107,7 +107,7 @@ data_clean_religion_jobs$religion<- recode(data_clean_religion_jobs$religion,'1'
 
 ## Charts
 
-#### As age increases, it appear more likely that a respondetn will agree with the idea that mother's choosing to work outside of the home will harm their children. Also, respondents from the Otohodox, Muslim, and Roman Catholic faiths seem to agree with this statement more often than those from other faiths.
+#### As the age of a respondent increases, it appears more likely that a respondent will agree with the idea that mother's choosing to work outside of the home will harm their children. Also, respondents from the Otohodox, Muslim, and Roman Catholic faiths seem to agree with this statement more often than those from other faiths.
 
 &nbsp;  
 &nbsp;  
@@ -169,8 +169,9 @@ ggplot(data = data_clean_religion_jobs, aes(mean_religion_jobs, religion))+
 ```
 
 ## Statistical Tests
+&nbsp;  
 
-####As the level of educational attainment of a respondent increases, so too does their level of disagreement with the statement that a mother's choice to work outside the homes harms her children. As the age of a respondent increases, they are more likely to agree with this statement. Women are also more likely to disagree with this statement.
+#### As the level of educational attainment of a respondent increases, so too does their level of disagreement with the statement that a mother's choice to work outside the homes harms her children. As the age of a respondent increases, they are more likely to agree with this statement. Women are also more likely to disagree with this statement.
 
 ```{r, echo=FALSE, include=TRUE, message=FALSE, results='asis'}
 
