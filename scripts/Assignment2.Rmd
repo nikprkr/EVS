@@ -11,11 +11,15 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+&nbsp;  
+&nbsp;  
+
 ## Project Description
 
 This project explores how sex, religious affiliation, and income influence how respondents answer questions meant to assess their perspectives on two issues: whether the children of mothers who work for pay suffer and whether when jobs are scarce, employers should give priority to citizens of a country over immigrants. The data used in this analysis was generated as part of the 2017 European Value Study (EVS). The EVS is described as "a large-scale, cross-national and longitudinal survey research program on how Europeans think about family, work, religion, politics, and society. Repeated every nine years in an increasing number of countries, the survey provides insights into the ideas, beliefs, preferences, attitudes, values, and opinions of citizens all over Europe."
 
-
+&nbsp;  
+&nbsp;  
 
 ## Descriptive Statistics
 
@@ -24,7 +28,7 @@ This project explores how sex, religious affiliation, and income influence how r
 library(tidyverse)
 library(haven)
 library(psych)
-
+library(texreg)
 
 data <- read_dta("/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/ZA7500_v4-0-0.dta")
 
@@ -40,7 +44,9 @@ data_clean <- data %>%
 
 ```
 
-```{r , echo=FALSE, include=TRUE}
+
+```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+
 
 data_continuous <- data_clean %>%
   select(income, age)
@@ -66,34 +72,123 @@ knitr::kable(table_categorical)
 data_clean_age<- data_clean %>%
   select(age,suffering_mother,jobs_scarce)
 
-data_clean_age_summary<- data_clean_age %>%
+data_clean_age_suffering<- data_clean_age %>%
   group_by(age) %>%
-  summarise(mean_suffering_mother = mean(suffering_mother)) %>%
+  summarise(mean_age_suffering = mean(suffering_mother)) %>%
   filter(age>0)
 
-data_clean_religion_summary<- data_clean %>%
+data_clean_religion_suffering<- data_clean %>%
   group_by(religion) %>%
-  summarise(mean_religion = mean(jobs_scarce)) %>%
+  summarise(mean_religion_suffering = mean(suffering_mother)) %>%
   filter(religion>0) 
 
-data_clean_religion_summary$religion <- c("Roman Catholic","Protestant", "Free Church/Nonconfirmist/Evangelical", "Jew", "Muslim", "Hindu", "Buddhist", "Orthodox", "Other")
+data_clean_religion_suffering$religion <- c("Roman Catholic","Protestant", "Free Church/Nonconfirmist/Evangelical", "Jew", "Muslim", "Hindu", "Buddhist", "Orthodox", "Other")
 
-data_clean_religion_summary$religion<- recode(data_clean_religion_summary$religion,'1'='Roman Catholic')
+data_clean_religion_suffering$religion<- recode(data_clean_religion_suffering$religion,'1'='Roman Catholic')
 
-  
-ggplot(data = data_clean_age_summary, aes(age,mean_suffering_mother))+
+data_clean_age_jobs<- data_clean_age %>%
+  group_by(age) %>%
+  summarise(mean_age_jobs= mean(jobs_scarce)) %>%
+  filter(age>0)
+
+data_clean_religion_jobs<- data_clean %>%
+  group_by(religion) %>%
+  summarise(mean_religion_jobs = mean(jobs_scarce)) %>%
+  filter(religion>0)   
+
+data_clean_religion_jobs$religion <- c("Roman Catholic","Protestant", "Free Church/Nonconfirmist/Evangelical", "Jew", "Muslim", "Hindu", "Buddhist", "Orthodox", "Other")
+
+data_clean_religion_jobs$religion<- recode(data_clean_religion_jobs$religion,'1'='Roman Catholic')
+
+
+```
+&nbsp;  
+&nbsp;  
+
+## Charts
+
+#### As age increases, it appear more likely that a respondetn will agree with the idea that mother's choosing to work outside of the home will harm their children. Also, respondents from the Otohodox, Muslim, and Roman Catholic faiths seem to agree with this statement more often than those from other faiths.
+
+&nbsp;  
+&nbsp;  
+
+```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+
+ggplot(data = data_clean_age_suffering, aes(age,mean_age_suffering))+
   theme_minimal()+
   geom_point() +
   xlab("age") +
-  ylab("mean response value")
+  ylab("mean response value")+
+  ggtitle("Age and mean response to 'children suffering' question")
 
-ggplot(data = data_clean_religion_summary, aes(mean_religion, religion))+
+
+
+```
+&nbsp;  
+&nbsp;  
+
+
+```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+
+ggplot(data = data_clean_religion_suffering, aes(mean_religion_suffering, religion))+
   theme_minimal()+
   geom_point() +
   xlab("mean response value") +
   ylab("religion")+
-  theme(axis.text.x = element_text(angle=90,vjust=0.5))
+  theme(axis.text.x = element_text(angle=90,vjust=0.5))+
+  ggtitle("Religion and mean response to 'children suffering' question")
+
+  
+```
+
+&nbsp;  
+&nbsp;  
+
+```{r, echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+ggplot(data = data_clean_age_jobs, aes(age,mean_age_jobs))+
+  theme_minimal()+
+  geom_point() +
+  xlab("age") +
+  ylab("mean response value")+
+  ggtitle("Age and mean response to 'scarce jobs' question")
 
 ```
+&nbsp;  
+&nbsp;  
+
+```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+
+ggplot(data = data_clean_religion_jobs, aes(mean_religion_jobs, religion))+
+  theme_minimal()+
+  geom_point() +
+  xlab("mean response value") +
+  ylab("religion")+
+  theme(axis.text.x = element_text(angle=90,vjust=0.5))+
+  ggtitle("Religion and mean response to 'jobs scarce' question")
+
+```
+
+## Statistical Tests
+
+####As the level of educational attainment of a respondent increases, so too does their level of disagreement with the statement that a mother's choice to work outside the homes harms her children. As the age of a respondent increases, they are more likely to agree with this statement. Women are also more likely to disagree with this statement.
+
+```{r, echo=FALSE, include=TRUE, message=FALSE, results='asis'}
+
+suffering.mother.lm<-lm(suffering_mother ~ education + age + age^2 + sex, data = data_clean)
+
+jobs.scarce.lm<-lm(jobs_scarce ~ education + age + age^2 + sex, data = data_clean)
+
+reg_table <- htmlreg(list(suffering.mother.lm, jobs.scarce.lm), 
+    dcolumn = TRUE, 
+    booktabs = TRUE,
+    use.packages = TRUE, 
+    label = "tab:1", 
+    caption = "Regression Estimation Results", float.pos = "hb",
+    custom.model.names = c("Working Mother", "Job Scarcity"))
+
+reg_table
+```
+
+
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
