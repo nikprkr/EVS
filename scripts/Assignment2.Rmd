@@ -124,10 +124,11 @@ data_long_religion<- data_merge_religion %>%
 &nbsp;  
 &nbsp;  
 
-## Charts
+## Figures
 
-#### As the age of a respondent increases, it appears more likely that a respondent will agree with the idea that mothers choosing to work outside of the home will harm their children. Also, respondents from the Othodox, Muslim, and Roman Catholic faiths seem to agree with this statement more often than those from other faiths.
+#### Figure 1 illustrates that, as the age of a respondent increases, they are more likely to agree with the idea that mothers choosing to work for pay will harm their children. This relationship also appears to hold true for the statement that when jobs are scarce, they should be given to citizens before imigrants. 
 
+#### Figure 2 illustrates the mean response for various religious groups. Respondents from the Orthodox, Muslim, and Roman Catholic faiths seem more likely to agree that when jobs are scarce, they should be given to citizens before imigrants. When it comes to the statement about mothers choosing to work for pay harming their children, there is less dispersion among religious groups.
 &nbsp;  
 &nbsp;  
 
@@ -138,7 +139,7 @@ ggplot(data = data_long_age, aes(age,values, color=new))+
   geom_point() +
   xlab("age") +
   ylab("mean response value")+
-  ggtitle("Age and mean response to question")
+  ggtitle("Figure 1: Age and mean response to question")
 
 
 
@@ -154,8 +155,8 @@ ggplot(data = data_long_religion, aes(religion, values, color=new))+
   geom_point() +
   xlab("mean response value") +
   ylab("religion")+
-  theme(axis.text.x = element_text(angle=90,vjust=0.5))+
-  ggtitle("Religion and mean response to question")
+  theme(axis.text.x = element_text(angle=65,vjust=0.5))+
+  ggtitle("Figure 2: Religion and mean response to question")
 
   
 ```
