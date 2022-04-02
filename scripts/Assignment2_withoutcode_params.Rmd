@@ -1,16 +1,21 @@
 ---
-title: "Report"
+title: "Country Specific Report"
 author: "Nick Parker"
 date: "3/13/2022"
 output:
   html_document:
     df_print: paged
     code_folding: hide
+params:
+  nms: AL
+  data: data_clean.csv
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Report on - <span style="color:red">`r params$nms`</span>
 
 &nbsp;  
 &nbsp;  
@@ -36,23 +41,28 @@ library(haven)
 library(psych)
 library(texreg)
 
-data <- read_dta("/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/ZA7500_v4-0-0.dta")
+data<- read.csv("/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/data/clean/data_clean.csv") 
 
-data_clean <- data %>%
-  select(v72,v80,v52,v261,v243_r,c_abrv,v225, age) %>%
-  rename("suffering_mother"=v72) %>%
-  rename("jobs_scarce"= v80) %>%
-  rename("religion"= v52) %>%
-  rename("sex"= v225) %>%
-  rename("education"= v243_r) %>%
-  rename("country"= c_abrv) %>%
-  rename("income" = v261)
+data_clean<- data %>%
+  select(-X) %>%
+  filter(country==params$nms)
+
 
 ```
 
 
-```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+```{r , include=TRUE, message=FALSE, fig.align='center'}
 
+
+data_clean$religion[data_clean$religion==1]<- "Roman Catholic"
+data_clean$religion[data_clean$religion==2]<- "Protestant"
+data_clean$religion[data_clean$religion==3]<- "Free Church"
+data_clean$religion[data_clean$religion==4]<- "Jew"
+data_clean$religion[data_clean$religion==5]<- "Muslim"
+data_clean$religion[data_clean$religion==6]<- "Hindu"
+data_clean$religion[data_clean$religion==7]<- "Buddhist"
+data_clean$religion[data_clean$religion==8]<- "Orthodox"
+data_clean$religion[data_clean$religion==9]<- "Other"
 
 data_continuous <- data_clean %>%
   select(income, age)
@@ -88,10 +98,6 @@ data_clean_religion_suffering<- data_clean %>%
   summarise(mean_religion_suffering = mean(suffering_mother)) %>%
   filter(religion>0) 
 
-data_clean_religion_suffering$religion <- c("Roman Catholic","Protestant", "Free Church/Nonconfirmist/Evangelical", "Jew", "Muslim", "Hindu", "Buddhist", "Orthodox", "Other")
-
-data_clean_religion_suffering$religion<- recode(data_clean_religion_suffering$religion,'1'='Roman Catholic')
-
 data_clean_age_jobs<- data_clean_age %>%
   group_by(age) %>%
   summarise(mean_age_jobs= mean(jobs_scarce)) %>%
@@ -101,8 +107,6 @@ data_clean_religion_jobs<- data_clean %>%
   group_by(religion) %>%
   summarise(mean_religion_jobs = mean(jobs_scarce)) %>%
   filter(religion>0)   
-
-data_clean_religion_jobs$religion <- c("Roman Catholic","Protestant", "Free Church/Nonconfirmist/Evangelical", "Jew", "Muslim", "Hindu", "Buddhist", "Orthodox", "Other")
 
 data_merge_age <- left_join(data_clean_age_suffering, data_clean_age_jobs, by="age")
 
@@ -133,7 +137,7 @@ Figure 2 illustrates the mean response for various religious groups. Respondents
 &nbsp;  
 &nbsp;  
 
-```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+```{r ,include=TRUE, message=FALSE, fig.align='center'}
 
 ggplot(data = data_long_age, aes(age,values, color=new))+
   theme_minimal()+
@@ -149,7 +153,7 @@ ggplot(data = data_long_age, aes(age,values, color=new))+
 &nbsp;  
 
 
-```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+```{r ,include=TRUE, message=FALSE, fig.align='center'}
 
 ggplot(data = data_long_religion, aes(religion, values, color=new))+
   theme_minimal()+
@@ -169,7 +173,7 @@ ggplot(data = data_long_religion, aes(religion, values, color=new))+
 &nbsp;  
 As the level of educational attainment of a respondent increases, so too does their level of disagreement with the statement that a mother's choice to work outside the homes harms her children. Women are also more likely to disagree with this statement. As the age of a respondent increases, they are more likely to agree with this statement. 
 
-```{r, echo=FALSE, include=TRUE, message=FALSE, results='asis'}
+```{r,include=TRUE, message=FALSE, results='asis'}
 
 suffering.mother.lm<-lm(suffering_mother ~ education + age + age^2 + sex, data = data_clean)
 

@@ -1,0 +1,37 @@
+---
+title: "Report"
+author: "Nick Parker"
+date: "3/13/2022"
+output:
+  html_document:
+    df_print: paged
+params:
+  nms: country
+  data: data_clean.csv
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+
+render_report <- function(path, country) { rmarkdown::render(
+    path,
+    params = list(nms = country),
+    output_file = paste0("Report-", country, ".html")
+) }
+
+render_report("/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/scripts/Assignment2_withoutcode_params.Rmd", country = "AL")
+
+## Loop over countries
+
+map(rownames(data),
+   render_report,
+   path = "/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/scripts/Assignment2_withoutcode_params.Rmd")
+
+```
+
+
+

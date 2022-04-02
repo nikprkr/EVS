@@ -5,7 +5,7 @@ date: "3/13/2022"
 output:
   html_document:
     df_print: paged
-    code_folding: hide
+    code_folding: show
 ---
 
 ```{r setup, include=FALSE}
@@ -51,7 +51,7 @@ data_clean <- data %>%
 ```
 
 
-```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+```{r , include=TRUE, message=FALSE, fig.align='center'}
 
 
 data_continuous <- data_clean %>%
@@ -133,7 +133,7 @@ Figure 2 illustrates the mean response for various religious groups. Respondents
 &nbsp;  
 &nbsp;  
 
-```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+```{r ,include=TRUE, message=FALSE, fig.align='center'}
 
 ggplot(data = data_long_age, aes(age,values, color=new))+
   theme_minimal()+
@@ -149,7 +149,7 @@ ggplot(data = data_long_age, aes(age,values, color=new))+
 &nbsp;  
 
 
-```{r , echo=FALSE, include=TRUE, message=FALSE, fig.align='center'}
+```{r ,include=TRUE, message=FALSE, fig.align='center'}
 
 ggplot(data = data_long_religion, aes(religion, values, color=new))+
   theme_minimal()+
@@ -169,7 +169,7 @@ ggplot(data = data_long_religion, aes(religion, values, color=new))+
 &nbsp;  
 As the level of educational attainment of a respondent increases, so too does their level of disagreement with the statement that a mother's choice to work outside the homes harms her children. Women are also more likely to disagree with this statement. As the age of a respondent increases, they are more likely to agree with this statement. 
 
-```{r, echo=FALSE, include=TRUE, message=FALSE, results='asis'}
+```{r,include=TRUE, message=FALSE, results='asis'}
 
 suffering.mother.lm<-lm(suffering_mother ~ education + age + age^2 + sex, data = data_clean)
 
