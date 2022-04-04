@@ -23,14 +23,15 @@ library(purrr)
 render_report <- function(path, country) { rmarkdown::render(
     path,
     params = list(nms = country),
-    output_file = paste0("Report-", country, ".html")
+    output_file = paste0("Report-", country, ".html"), 
+    output_dir = "/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/output/reports"
 ) }
 
 render_report("/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/scripts/Assignment2_withoutcode_params.Rmd", country = "AL")
 
 ## Loop over countries
 
-map(rownames(data_clean),
+map(na.omit(unique(data_clean$country)),
    render_report,
    path = "/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/scripts/Assignment2_withoutcode_params.Rmd")
 

@@ -1,5 +1,5 @@
 ---
-title: "Report"
+title: "Report for All Countries"
 author: "Nick Parker"
 date: "3/13/2022"
 output:
@@ -140,7 +140,10 @@ ggplot(data = data_long_age, aes(age,values, color=new))+
   geom_point() +
   xlab("age") +
   ylab("mean response value")+
-  ggtitle("Figure 1: Age and mean response to question")
+  ggtitle("Figure 1: Age and mean response to question")+
+  geom_smooth() +
+  geom_smooth(method=lm) 
+
 
 
 

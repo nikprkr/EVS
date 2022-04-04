@@ -24,8 +24,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This project explores how sex, religious affiliation, and income influence the degree to which respondents agree with the following statements:
 
-- When a mother works for pay, the children suffer
-- When jobs are scarce, employers should give priority to [NATIONALITY] people over immigrants
+- When a mother works for pay, the children suffer.
+- When jobs are scarce, employers should give priority to [NATIONALITY] people over immigrants.
 
 The data used in this analysis was generated as part of the 2017 European Value Study (EVS). The EVS is described as "a large-scale, cross-national and longitudinal survey research program on how Europeans think about family, work, religion, politics, and society. Repeated every nine years in an increasing number of countries, the survey provides insights into the ideas, beliefs, preferences, attitudes, values, and opinions of citizens all over Europe."
 
@@ -40,6 +40,8 @@ library(tidyverse)
 library(haven)
 library(psych)
 library(texreg)
+
+
 
 data<- read.csv("/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/data/clean/data_clean.csv") 
 
@@ -130,9 +132,11 @@ data_long_religion<- data_merge_religion %>%
 
 ## Figures
 
-Figure 1 illustrates that, as the age of a respondent increases, they are more likely to agree with the idea that mothers choosing to work for pay will harm their children. This relationship also appears to hold true for the statement that when jobs are scarce, they should be given to citizens before imigrants. 
+Figure 1 illustrates the relationship between respondent age and their level of agreement with either statement. The mean response value is calculated for each age. A lower mean response value indicates a higher level of agreement with the statement among the age cohort.  
 
-Figure 2 illustrates the mean response for various religious groups. Respondents from the Orthodox, Muslim, and Roman Catholic faiths seem more likely to agree that when jobs are scarce, they should be given to citizens before imigrants. When it comes to the statement about mothers choosing to work for pay harming their children, there is less dispersion among religious groups.
+Figure 2 illustrates the mean response value by religious affiliation. The mean response value is calculated for each age. A lower mean response value indicates a higher level of agreement with the statement among those with a particular religious affiliation.  
+  
+
 &nbsp;  
 &nbsp;  
 
@@ -143,7 +147,8 @@ ggplot(data = data_long_age, aes(age,values, color=new))+
   geom_point() +
   xlab("age") +
   ylab("mean response value")+
-  ggtitle("Figure 1: Age and mean response to question")
+  ggtitle("Figure 1: Age and mean response to question")+
+  geom_smooth(method=lm) 
 
 
 
@@ -162,7 +167,6 @@ ggplot(data = data_long_religion, aes(religion, values, color=new))+
   theme(axis.text.x = element_text(angle=65,vjust=0.5))+
   ggtitle("Figure 2: Religion and mean response to question")
 
-  
 ```
 
 &nbsp;  
@@ -188,7 +192,3 @@ reg_table <- htmlreg(list(suffering.mother.lm, jobs.scarce.lm),
 
 reg_table
 ```
-
-
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
