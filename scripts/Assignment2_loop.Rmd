@@ -17,6 +17,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 
+
+library(purrr)
+
 render_report <- function(path, country) { rmarkdown::render(
     path,
     params = list(nms = country),
@@ -27,7 +30,7 @@ render_report("/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/scripts/Assignment2_w
 
 ## Loop over countries
 
-map(rownames(data),
+map(rownames(data_clean),
    render_report,
    path = "/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/scripts/Assignment2_withoutcode_params.Rmd")
 

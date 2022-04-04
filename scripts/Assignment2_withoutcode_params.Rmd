@@ -7,7 +7,7 @@ output:
     df_print: paged
     code_folding: hide
 params:
-  nms: AL
+  nms: country
   data: data_clean.csv
 ---
 
@@ -44,9 +44,8 @@ library(texreg)
 data<- read.csv("/Users/nicholasparker/Dropbox/JPSM/MWDS/EVS/data/clean/data_clean.csv") 
 
 data_clean<- data %>%
-  select(-X) %>%
+  select(country, everything(),-X) %>%
   filter(country==params$nms)
-
 
 ```
 
