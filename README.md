@@ -5,7 +5,7 @@
 This project explores how sex, religious affiliation, and income influence the degree to which respondents agree with the following statements:
 
 - When a mother works for pay, the children suffer
-- When jobs are scarce, employers should give priority to [NATIONALITY] people over immigrants
+- When jobs are scarce, employers should give priority to citizens of the country over immigrants
 
 The data used in this analysis was generated as part of the 2017 European Value Study (EVS). 
 The EVS is described as "a large-scale, cross-national and longitudinal survey research program on how 
